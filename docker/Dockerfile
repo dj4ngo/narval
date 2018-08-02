@@ -26,28 +26,41 @@
 #                                              8DD88Z          
 #                                                 $8O8         
 #                                                   Z8Z        
-FROM debian:sid-slim
+FROM debian:stable-slim
 
 MAINTAINER Sébastien Boyron
 
-RUN apt-get update &&\
-  apt-get -y dist-upgrade &&\
-  apt-get -y install firefox tmux vim bzip2 netcat git python python3 \
-  default-jre &&\
-  apt-get -y autoremove &&\
-  apt-get -y cleanall &&\
+RUN  \
+  echo 'deb http://ftp.uk.debian.org/debian/ stable main non-free' >> /etc/apt/sources.list.d/non-free.list && \
+  echo 'deb-src http://ftp.uk.debian.org/debian/ stable main non-free' >> /etc/apt/sources.list.d/non-free.list && \
+  apt-get update && \
+  apt-get -y dist-upgrade && \
+  apt-get -y install tmux vim bzip2 netcat git python python3 openvpn net-tools && \
+  apt-get -y autoremove && \
+  apt-get -y clean && \
   rm -rf /var/cache/apt /var/lib/apt/lists
 
-RUN mkdir -p /narval/{dict,tools} \
 
+# Add dicts
+RUN mkdir -p /narval/dict 
 ADD http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 /narval/dict/rockyou.txt.bz2
 ADD http://downloads.skullsecurity.org/passwords/john.txt.bz2 /narval/dict/john.txt.bz2
 
-RUN cd /narval/tools &&\
+# Add sqlmap
+RUN mkdir -p /narval/tools && \
+  cd /narval/tools &&\
   git clone https://github.com/sqlmapproject/sqlmap.git sqlmap &&\
   ln -s /narval/tools/sqlmap/sqlmap.py /usr/local/bin/sqlmap
-  
+
+# Add burp
 RUN mkdir -p /narval/tools/burp &&\
   cd /narval/tools/burp &&\
   curl -JLO https://portswigger.net/burp/releases/download?product=community&version=1.7.36&type=jar 
 
+
+# Add nikto
+RUN apt-get update &&\
+  apt-get -y install nikto &&\
+  apt-get -y autoremove &&\
+  apt-get -y clean &&\
+  rm -rf /var/cache/apt /var/lib/apt/lists
