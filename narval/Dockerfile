@@ -33,11 +33,16 @@ MAINTAINER Sébastien Boyron
 RUN apt-get update &&\
   apt-get -y dist-upgrade
 
-RUN mkdir -p /narval/dict
+RUN mkdir -p /narval/dict /narval/tools
 
 ADD http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 /narval/dict/rockyou.txt.bz2
 ADD http://downloads.skullsecurity.org/passwords/john.txt.bz2 /narval/dict/john.txt.bz2
 
 RUN apt-get -y install \
-  firefox tmux vim bzip2
+  firefox tmux vim bzip2 netcat git
 
+
+RUN cd /narval/tools &&\
+  git clone https://github.com/sqlmapproject/sqlmap.git sqlmap &&\
+  ln -s /narval/tools/sqlmap/sqlmap.py /usr/local/bin/sqlmap
+  
