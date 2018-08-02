@@ -35,7 +35,7 @@ function narval_update() {
 
 #arg parsing
 case "$1" in
-	start)
+	''|start)
 		shift
 		narval_start ${@}
 	;;

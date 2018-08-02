@@ -31,18 +31,23 @@ FROM debian:sid-slim
 MAINTAINER Sébastien Boyron
 
 RUN apt-get update &&\
-  apt-get -y dist-upgrade
+  apt-get -y dist-upgrade &&\
+  apt-get -y install firefox tmux vim bzip2 netcat git python python3 \
+  default-jre &&\
+  apt-get -y autoremove &&\
+  apt-get -y cleanall &&\
+  rm -rf /var/cache/apt /var/lib/apt/lists
 
-RUN mkdir -p /narval/dict /narval/tools
+RUN mkdir -p /narval/{dict,tools} \
 
 ADD http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 /narval/dict/rockyou.txt.bz2
 ADD http://downloads.skullsecurity.org/passwords/john.txt.bz2 /narval/dict/john.txt.bz2
-
-RUN apt-get -y install \
-  firefox tmux vim bzip2 netcat git
-
 
 RUN cd /narval/tools &&\
   git clone https://github.com/sqlmapproject/sqlmap.git sqlmap &&\
   ln -s /narval/tools/sqlmap/sqlmap.py /usr/local/bin/sqlmap
   
+RUN mkdir -p /narval/tools/burp &&\
+  cd /narval/tools/burp &&\
+  curl -JLO https://portswigger.net/burp/releases/download?product=community&version=1.7.36&type=jar 
+
