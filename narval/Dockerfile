@@ -33,6 +33,11 @@ MAINTAINER Sébastien Boyron
 RUN apt-get update &&\
   apt-get -y dist-upgrade
 
-RUN apt-get -y install firefox \
-	tmux
+RUN mkdir -p /narval/dict
+
+ADD http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 /narval/dict/rockyou.txt.bz2
+ADD http://downloads.skullsecurity.org/passwords/john.txt.bz2 /narval/dict/john.txt.bz2
+
+RUN apt-get -y install \
+  firefox tmux vim bzip2
 
