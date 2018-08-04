@@ -31,20 +31,23 @@ FROM debian:stable-slim
 MAINTAINER Sébastien Boyron
 
 RUN  \
-  echo 'deb http://ftp.uk.debian.org/debian/ stable main non-free' >> /etc/apt/sources.list.d/non-free.list && \
-  echo 'deb-src http://ftp.uk.debian.org/debian/ stable main non-free' >> /etc/apt/sources.list.d/non-free.list && \
+  debian_server="$(awk 'NR==1 {print $2}' /etc/apt/sources.list)" && \
+  debian_version="$(awk 'NR==1 {print $3}' /etc/apt/sources.list)" && \
+  echo "deb ${debian_server} ${debian_version} non-free" > /etc/apt/sources.list.d/non-free.list && \
+  echo "deb-src ${debian_server} ${debian_version} non-free" >> /etc/apt/sources.list.d/non-free.list && \
   apt-get update && \
   apt-get -y dist-upgrade && \
-  apt-get -y install tmux vim bzip2 netcat git python python3 openvpn net-tools && \
+  apt-get -y install tmux vim bzip2 netcat git python python3 openvpn net-tools wget curl manpages && \
   apt-get -y autoremove && \
   apt-get -y clean && \
   rm -rf /var/cache/apt /var/lib/apt/lists
 
 
 # Add dicts
-RUN mkdir -p /narval/dict 
-ADD http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 /narval/dict/rockyou.txt.bz2
-ADD http://downloads.skullsecurity.org/passwords/john.txt.bz2 /narval/dict/john.txt.bz2
+RUN mkdir -p /narval/dict  &&\
+  cd /narval/dict &&\
+  wget http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 &&\
+  wget http://downloads.skullsecurity.org/passwords/john.txt.bz2
 
 # Add sqlmap
 RUN mkdir -p /narval/tools && \
@@ -55,7 +58,7 @@ RUN mkdir -p /narval/tools && \
 # Add burp
 RUN mkdir -p /narval/tools/burp &&\
   cd /narval/tools/burp &&\
-  curl -JLO https://portswigger.net/burp/releases/download?product=community&version=1.7.36&type=jar 
+  curl -JLO https://portswigger.net/burp/releases/download
 
 
 # Add nikto
