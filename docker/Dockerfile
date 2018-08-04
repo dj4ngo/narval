@@ -31,17 +31,17 @@ FROM debian:stable-slim
 MAINTAINER Sébastien Boyron
 
 RUN  \
-  debian_server="$(awk 'NR==1 {print $2}' /etc/apt/sources.list)" && \
-  debian_version="$(awk 'NR==1 {print $3}' /etc/apt/sources.list)" && \
-  echo "deb ${debian_server} ${debian_version} contrib non-free" > /etc/apt/sources.list.d/non-free.list && \
-  echo "deb-src ${debian_server} ${debian_version} contrib non-free" >> /etc/apt/sources.list.d/non-free.list && \
-  echo "deb ${debian_server} stretch-backports main contrib non-free" > /etc/apt/sources.list.d/stretch-backports.list && \
-  echo "deb-src ${debian_server} stretch-backports main contrib non-free" >> /etc/apt/sources.list.d/stretch-backports.list && \
-  apt-get update && \
-  apt-get -y dist-upgrade && \
-  apt-get -y install tmux vim bzip2 netcat git python python3 openvpn net-tools wget curl man-db manpages && \
-  apt-get -y autoremove && \
-  apt-get -y clean && \
+  debian_server="$(awk 'NR==1 {print $2}' /etc/apt/sources.list)" &&\
+  debian_version="$(awk 'NR==1 {print $3}' /etc/apt/sources.list)" &&\
+  echo "deb ${debian_server} ${debian_version} contrib non-free" > /etc/apt/sources.list.d/non-free.list &&\
+  echo "deb-src ${debian_server} ${debian_version} contrib non-free" >> /etc/apt/sources.list.d/non-free.list &&\
+  echo "deb ${debian_server} stretch-backports main contrib non-free" > /etc/apt/sources.list.d/stretch-backports.list &&\
+  echo "deb-src ${debian_server} stretch-backports main contrib non-free" >> /etc/apt/sources.list.d/stretch-backports.list &&\
+  apt-get update &&\
+  apt-get -y dist-upgrade &&\
+  apt-get -y install tmux vim bzip2 netcat git python python3 openvpn net-tools wget curl man-db manpages &&\
+  apt-get -y autoremove &&\
+  apt-get -y clean &&\
   rm -rf /var/cache/apt /var/lib/apt/lists
 
 
@@ -52,7 +52,7 @@ RUN mkdir -p /narval/dict  &&\
   wget http://downloads.skullsecurity.org/passwords/john.txt.bz2
 
 # Add sqlmap
-RUN mkdir -p /narval/tools && \
+RUN mkdir -p /narval/tools &&\
   cd /narval/tools &&\
   git clone https://github.com/sqlmapproject/sqlmap.git sqlmap &&\
   ln -s /narval/tools/sqlmap/sqlmap.py /usr/local/bin/sqlmap
@@ -63,16 +63,23 @@ RUN mkdir -p /narval/tools/burp &&\
   curl -JLO https://portswigger.net/burp/releases/download
 
 # Add java for burp
-RUN mkdir -p /usr/share/man/man1 && \
-  apt-get update && \
-  apt-get install -y default-jre && \
-  apt-get -y autoremove && \
-  apt-get -y clean && \
+RUN mkdir -p /usr/share/man/man1 &&\
+  apt-get update &&\
+  apt-get install -y default-jre &&\
+  apt-get -y autoremove &&\
+  apt-get -y clean &&\
   rm -rf /var/cache/apt /var/lib/apt/lists
 
 # Add nikto
 RUN apt-get update &&\
   apt-get -y install nikto &&\
+  apt-get -y autoremove &&\
+  apt-get -y clean &&\
+  rm -rf /var/cache/apt /var/lib/apt/lists
+
+# Add firefox
+RUN apt-get update &&\
+  apt-get -y install firefox-esr &&\
   apt-get -y autoremove &&\
   apt-get -y clean &&\
   rm -rf /var/cache/apt /var/lib/apt/lists
