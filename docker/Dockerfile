@@ -39,7 +39,7 @@ RUN  \
   echo "deb-src ${debian_server} stretch-backports main contrib non-free" >> /etc/apt/sources.list.d/stretch-backports.list && \
   apt-get update && \
   apt-get -y dist-upgrade && \
-  apt-get -y install tmux vim bzip2 netcat git python python3 openvpn net-tools wget curl manpages && \
+  apt-get -y install tmux vim bzip2 netcat git python python3 openvpn net-tools wget curl man-db manpages && \
   apt-get -y autoremove && \
   apt-get -y clean && \
   rm -rf /var/cache/apt /var/lib/apt/lists
@@ -62,6 +62,14 @@ RUN mkdir -p /narval/tools/burp &&\
   cd /narval/tools/burp &&\
   curl -JLO https://portswigger.net/burp/releases/download
 
+# Add java 8 for burp
+RUN mkdir -p /usr/share/man/man1 && \
+  apt-get update && \
+  apt-get install -y -t stretch-backports ca-certificates-java && \
+  apt-get install -y openjdk-8-jre && \
+  apt-get -y autoremove && \
+  apt-get -y clean && \
+  rm -rf /var/cache/apt /var/lib/apt/lists
 
 # Add nikto
 RUN apt-get update &&\
