@@ -62,11 +62,10 @@ RUN mkdir -p /narval/tools/burp &&\
   cd /narval/tools/burp &&\
   curl -JLO https://portswigger.net/burp/releases/download
 
-# Add java 8 for burp
+# Add java for burp
 RUN mkdir -p /usr/share/man/man1 && \
   apt-get update && \
-  apt-get install -y -t stretch-backports ca-certificates-java && \
-  apt-get install -y openjdk-8-jre && \
+  apt-get install -y default-jre && \
   apt-get -y autoremove && \
   apt-get -y clean && \
   rm -rf /var/cache/apt /var/lib/apt/lists
